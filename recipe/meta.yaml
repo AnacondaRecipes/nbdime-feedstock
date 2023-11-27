@@ -10,7 +10,7 @@ source:
 
 build:
   number: 0
-  noarch: python
+  skip: true # [py<36 or s390x]
   script:
     - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   entry_points:
@@ -32,9 +32,8 @@ requirements:
   host:
     - hatch-jupyter-builder >=0.5
     - hatchling >=1.5.0
-    - jupyterlab >=4.0.0,<5
     - pip
-    - python >=3.6
+    - python
   run:
     - colorama
     - gitpython !=2.1.4,!=2.1.5,!=2.1.6
@@ -43,7 +42,7 @@ requirements:
     - jupyter-server-mathjax >=0.2.2
     - nbformat
     - pygments
-    - python >=3.6
+    - python
     - requests
     - tornado
 
