@@ -128,8 +128,14 @@ test:
     - notebook
     # pytest<8 to fix: test_web.py: 'yield' keyword is allowed in fixtures, but not in tests (test_fetch_diff)
     - pytest >=6.0,<8
-    - git
-
+    - pytest-cov
+    - pytest-timeout
+    - pytest-tornado
+    - mock
+    - ipykernel
+    - pytest-console-scripts
+    - pre-commit
+    - flaky
 about:
   home: https://nbdime.readthedocs.io
   license: BSD-3-Clause
