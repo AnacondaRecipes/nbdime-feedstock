@@ -148,7 +148,6 @@ test:
     - jsonschema
     # pytest<8 to fix: test_web.py: 'yield' keyword is allowed in fixtures, but not in tests (test_fetch_diff)
     - pytest >=6.0,<8
-    - git
 
 about:
   home: https://nbdime.readthedocs.io
