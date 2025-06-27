@@ -49,6 +49,13 @@ requirements:
     - jupyter-server-mathjax >=0.2.2
     - jinja2 >=2.9
 
+# {% set tests_to_skip = "" %}
+# {% set ignore_tests = "" %}
+# # ModuleNotFoundError: No module named 'whey_conda'
+# {% set ignore_tests = ignore_tests + " --ignore=tests/test_utils.py" %}
+# # ConnectionRefusedError: [Errno 111] Connection refused
+# {% set tests_to_skip = tests_to_skip + "test_diff_api_checkpoint" %}
+
 test:
   imports:
     - nbdime
@@ -118,8 +125,10 @@ test:
     - pip
     - tabulate
     - jsonschema
+    - notebook
     # pytest<8 to fix: test_web.py: 'yield' keyword is allowed in fixtures, but not in tests (test_fetch_diff)
     - pytest >=6.0,<8
+    - git
 
 about:
   home: https://nbdime.readthedocs.io
