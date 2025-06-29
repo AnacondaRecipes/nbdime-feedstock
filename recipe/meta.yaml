@@ -69,10 +69,10 @@ requirements:
 # Missing git config email/name
 # CalledProcessError: Command '['git', 'commit', '-m', 'init base branch']' returned non-zero exit status 128.
 {% set tests_to_skip = tests_to_skip + " test_diff_web_gitrefs" %}  # [win]
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_diff_gitrefs.py" %}  # [win]
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_git_diffdriver.py" %}  # [win]
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_git_filter_integration.py" %}  # [win]
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_server_extension.py" %}  # [win]
+{% set ignore_tests = ignore_tests + " --ignore=nbdime/tests/test_diff_gitrefs.py" %}  # [win]
+{% set ignore_tests = ignore_tests + " --ignore=nbdime/tests/test_git_diffdriver.py" %}  # [win]
+{% set ignore_tests = ignore_tests + " --ignore=nbdime/tests/test_git_filter_integration.py" %}  # [win]
+{% set ignore_tests = ignore_tests + " --ignore=nbdime/tests/test_server_extension.py" %}  # [win]
 
 test:
   source_files:
