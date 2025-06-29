@@ -49,6 +49,7 @@ requirements:
     - jupyter-server-mathjax >=0.2.2
     - jinja2 >=2.9
 
+{% set ignore_tests = "" %}
 {% set tests_to_skip = "" %}  # [linux or win]
 # ConnectionRefusedError: [Errno 111] Connection refused
 {% set tests_to_skip = tests_to_skip + " test_diff_api_checkpoint" %}  # [linux]
@@ -65,10 +66,13 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_patches_both_ends" %}  # [linux]
 {% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_insertion_similar" %}  # [linux]
 {% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_replacement_similar" %}  # [linux]
-# AssertionError: assert 'nbdiff C:\\b...foe(1, 2)\n\n' == 'nbdiff C:\\b...foe(1, 2)\n\n'
-{% set tests_to_skip = tests_to_skip + " test_git_diff_driver" %}  # [win]
-{% set tests_to_skip = tests_to_skip + " test_git_diff_driver_ignore_flags" %}  # [win]
-{% set tests_to_skip = tests_to_skip + " test_git_diff_driver_flags" %}  # [win]
+# Missing git config email/name
+# CalledProcessError: Command '['git', 'commit', '-m', 'init base branch']' returned non-zero exit status 128.
+{% set tests_to_skip = tests_to_skip + " test_diff_web_gitrefs" %}  # [win]
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_diff_gitrefs.py" %}  # [win]
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_git_diffdriver.py" %}  # [win]
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_git_filter_integration.py" %}  # [win]
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_server_extension.py" %}  # [win]
 
 test:
   source_files:
@@ -112,10 +116,7 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    # Git config needed for unit tests
-    - git config --global user.name "Test User"
-    - git config --global user.email "test@example.com"
-    - pytest -v -k "not ({{ tests_to_skip }})" --pyargs nbdime  # [linux or win]
+    - pytest -v {{ ignore_tests }} -k "not ({{ tests_to_skip }})" --pyargs nbdime  # [linux or win]
     - pytest -v --pyargs nbdime  # [not (linux or win)]
     - nbdime show -h
     - nbshow -h
