@@ -1,1 +1,2 @@
-aggregate_check: false
+channels:
+  - https://staging.continuum.io/prefect/fs/jupyter-server-mathjax-feedstock/pr3/b4ea623
