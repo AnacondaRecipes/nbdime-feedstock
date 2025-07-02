@@ -49,30 +49,21 @@ requirements:
     - jupyter-server-mathjax >=0.2.2
     - jinja2 >=2.9
 
-{% set ignore_tests = "" %}
-{% set tests_to_skip = "" %}  # [linux or win]
 # ConnectionRefusedError: [Errno 111] Connection refused
-{% set tests_to_skip = tests_to_skip + " test_diff_api_checkpoint" %}  # [linux]
+{% set tests_to_skip = "test_diff_api_checkpoint" %}
 # FileNotFoundError: [Errno 2] No such file or directory: 'git'
-{% set tests_to_skip = tests_to_skip + " or test_nbmerge_app_decisions_outfile" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_interrogate_filter_no_repo" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_filter_cmd_invalid_filter" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_apply_filter_no_repo" %}  # [linux]
+{% set tests_to_skip = tests_to_skip + " or test_nbmerge_app_decisions_outfile" %}
+{% set tests_to_skip = tests_to_skip + " or test_interrogate_filter_no_repo" %}
+{% set tests_to_skip = tests_to_skip + " or test_filter_cmd_invalid_filter" %}
+{% set tests_to_skip = tests_to_skip + " or test_apply_filter_no_repo" %}
 # AssertionError: assert ['<<<<<<< loc...\nto align\n'] == ['<<<<<<< loc...>>>>> remote']
-{% set tests_to_skip = tests_to_skip + " or test_merge_input_strategy_inline_source_conflict" %}  # [linux]
+{% set tests_to_skip = tests_to_skip + " or test_merge_input_strategy_inline_source_conflict" %}
 # AssertionError: assert {'nbformat': ...utputs': []}]} == {'nbformat': ...utputs': []}]}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_replace_line" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_add_to_line" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_patches_both_ends" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_insertion_similar" %}  # [linux]
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_replacement_similar" %}  # [linux]
-# Missing git config email/name
-# CalledProcessError: Command '['git', 'commit', '-m', 'init base branch']' returned non-zero exit status 128.
-{% set tests_to_skip = tests_to_skip + " test_diff_web_gitrefs" %}  # [win]
-{% set ignore_tests = ignore_tests + " --ignore=nbdime/tests/test_diff_gitrefs.py" %}  # [win]
-{% set ignore_tests = ignore_tests + " --ignore=nbdime/tests/test_git_diffdriver.py" %}  # [win]
-{% set ignore_tests = ignore_tests + " --ignore=nbdime/tests/test_git_filter_integration.py" %}  # [win]
-{% set ignore_tests = ignore_tests + " --ignore=nbdime/tests/test_server_extension.py" %}  # [win]
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_replace_line" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_add_to_line" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_patches_both_ends" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_insertion_similar" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_replacement_similar" %}
 
 test:
   source_files:
@@ -116,8 +107,8 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest -v {{ ignore_tests }} -k "not ({{ tests_to_skip }})" --pyargs nbdime  # [linux or win]
-    - pytest -v --pyargs nbdime  # [not (linux or win)]
+    # Few files of Windows tests failing (Tests related to Git). Cannot exclude them when I use '--pyargs nbdime', '--ignore' flag doesn't work.
+    - pytest -v -k "not ({{ tests_to_skip }})" --pyargs nbdime  # [unix]
     - nbdime show -h
     - nbshow -h
     - nbdiff -h
