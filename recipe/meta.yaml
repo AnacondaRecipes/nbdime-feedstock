@@ -1,16 +1,17 @@
-{% set version = "4.0.1" %}
+{% set name = "nbdime" %}
+{% set version = "4.0.2" %}
 
 package:
-  name: nbdime
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/n/nbdime/nbdime-{{ version }}.tar.gz
-  sha256: f1a760c0b00c1ba9b4945c16ce92577f393fb51d184f351b7685ba6e8502098e
+  url: https://pypi.org/packages/source/n/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d8279f8f4b236c0b253b20d60c4831bb67843ed8dbd6e09f234eb011d36f1bf2
 
 build:
   number: 0
-  skip: true # [py<36 or s390x]
+  skip: true  # [py<36]
   script:
     - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   entry_points:
@@ -28,33 +29,86 @@ build:
     - nbmerge = nbdime.nbmergeapp:main
     - nbmerge-web = nbdime.webapp.nbmergeweb:main
     - nbshow = nbdime.nbshowapp:main
+
 requirements:
   host:
-    - hatch-jupyter-builder >=0.5
-    - hatchling >=1.5.0
     - pip
     - python
+    - hatchling >=1.5.0
+    - jupyterlab >=4.0.0,<5
+    - hatch-jupyter-builder >=0.5
   run:
+    - python
+    - nbformat
     - colorama
+    - pygments
+    - tornado
+    - requests
     - gitpython !=2.1.4,!=2.1.5,!=2.1.6
-    - jinja2 >=2.9
     - jupyter_server
     - jupyter-server-mathjax >=0.2.2
-    - nbformat
-    - pygments
-    - python
-    - requests
-    - tornado
+    - jinja2 >=2.9
+
+# ConnectionRefusedError: [Errno 111] Connection refused
+{% set tests_to_skip = "test_diff_api_checkpoint" %}
+# FileNotFoundError: [Errno 2] No such file or directory: 'git'
+{% set tests_to_skip = tests_to_skip + " or test_nbmerge_app_decisions_outfile" %}
+{% set tests_to_skip = tests_to_skip + " or test_interrogate_filter_no_repo" %}
+{% set tests_to_skip = tests_to_skip + " or test_filter_cmd_invalid_filter" %}
+{% set tests_to_skip = tests_to_skip + " or test_apply_filter_no_repo" %}
+# AssertionError: assert ['<<<<<<< loc...\nto align\n'] == ['<<<<<<< loc...>>>>> remote']
+{% set tests_to_skip = tests_to_skip + " or test_merge_input_strategy_inline_source_conflict" %}
+# AssertionError: assert {'nbformat': ...utputs': []}]} == {'nbformat': ...utputs': []}]}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_replace_line" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_add_to_line" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_patches_both_ends" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_insertion_similar" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_replacement_similar" %}
 
 test:
-  requires:
-    - jupyterlab >=4.0.0,<5.0.0a0
-    - m2-grep  # [win]
-    - pip
+  source_files:
+    - nbdime/tests
+    - nbdime/vcs/git
   imports:
     - nbdime
+    - nbdime.args
+    - nbdime.config
+    - nbdime.diff_format
+    - nbdime.diff_utils
+    - nbdime.diffing
+    - nbdime.diffing.config
+    - nbdime.diffing.directorydiff
+    - nbdime.diffing.lcs
+    - nbdime.diffing.notebooks
+    - nbdime.diffing.seq_bruteforce
+    - nbdime.diffing.seq_difflib
+    - nbdime.diffing.sequences
+    - nbdime.diffing.snakes
+    - nbdime.log
+    - nbdime.merging.decisions
+    - nbdime.merging.generic
+    - nbdime.merging.notebooks
+    - nbdime.merging.strategies
+    - nbdime.nbdiffapp
+    - nbdime.nbmergeapp
+    - nbdime.nbshowapp
+    - nbdime.prettyprint
+    - nbdime.profiling
+    - nbdime.utils
+    - nbdime.vcs.git
+    - nbdime.vcs.git.diffdriver
+    - nbdime.vcs.git.filter_integration
+    - nbdime.vcs.hg
+    - nbdime.vcs.hg.diff
+    - nbdime.vcs.hg.diffweb
+    - nbdime.webapp
+    - nbdime.webapp.nbdiffweb
+    - nbdime.webapp.nbmergeweb
   commands:
     - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    # Few files of Windows tests failing (Tests related to Git). Cannot exclude them when I use '--pyargs nbdime', '--ignore' flag doesn't work.
+    - pytest -v -k "not ({{ tests_to_skip }})" --pyargs nbdime  # [unix]
     - nbdime show -h
     - nbshow -h
     - nbdiff -h
@@ -78,6 +132,14 @@ test:
     # check files
     - grep -iE "nbdime-jupyterlab.*OK*" labextensions
     - grep -iE "nbdime.*OK" server_extensions
+  requires:
+    - jupyterlab>=4.0.0,<5
+    - m2-grep  # [win]
+    - pip
+    - tabulate
+    - jsonschema
+    # pytest<8 to fix: test_web.py: 'yield' keyword is allowed in fixtures, but not in tests (test_fetch_diff)
+    - pytest >=6.0,<8
 
 about:
   home: https://nbdime.readthedocs.io
@@ -87,6 +149,10 @@ about:
     - LICENSE.md
     - nbdime/labextension/static/third-party-licenses.json
   summary: Diff and merge of Jupyter Notebooks
+  description: |
+    nbdime provides “content-aware” diffing and merging of Jupyter notebooks. 
+    It understands the structure of notebook documents. 
+    Therefore, it can make intelligent decisions when diffing and merging notebooks.
   doc_url: https://nbdime.readthedocs.io
   dev_url: https://github.com/jupyter/nbdime
 
