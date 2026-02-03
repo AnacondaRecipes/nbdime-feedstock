@@ -1,5 +1,16 @@
 {% set name = "nbdime" %}
-{% set version = "4.0.2" %}
+{% set version = "4.0.3" %}
+{% set tests_to_skip = "test_diff_api_checkpoint" %}
+{% set tests_to_skip = tests_to_skip + " or test_nbmerge_app_decisions_outfile" %}
+{% set tests_to_skip = tests_to_skip + " or test_interrogate_filter_no_repo" %}
+{% set tests_to_skip = tests_to_skip + " or test_filter_cmd_invalid_filter" %}
+{% set tests_to_skip = tests_to_skip + " or test_apply_filter_no_repo" %}
+{% set tests_to_skip = tests_to_skip + " or test_merge_input_strategy_inline_source_conflict" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_replace_line" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_add_to_line" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_patches_both_ends" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_insertion_similar" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_replacement_similar" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +18,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/n/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: d8279f8f4b236c0b253b20d60c4831bb67843ed8dbd6e09f234eb011d36f1bf2
+  sha256: 62ab50a758282523c4501144b9f314221dbbaed0403c12fd70f6a4fcc532ec24
 
 build:
   number: 0
@@ -48,23 +59,12 @@ requirements:
     - jupyter_server
     - jupyter-server-mathjax >=0.2.2
     - jinja2 >=2.9
+    - jupyter-server
 
 # ConnectionRefusedError: [Errno 111] Connection refused
-{% set tests_to_skip = "test_diff_api_checkpoint" %}
 # FileNotFoundError: [Errno 2] No such file or directory: 'git'
-{% set tests_to_skip = tests_to_skip + " or test_nbmerge_app_decisions_outfile" %}
-{% set tests_to_skip = tests_to_skip + " or test_interrogate_filter_no_repo" %}
-{% set tests_to_skip = tests_to_skip + " or test_filter_cmd_invalid_filter" %}
-{% set tests_to_skip = tests_to_skip + " or test_apply_filter_no_repo" %}
 # AssertionError: assert ['<<<<<<< loc...\nto align\n'] == ['<<<<<<< loc...>>>>> remote']
-{% set tests_to_skip = tests_to_skip + " or test_merge_input_strategy_inline_source_conflict" %}
 # AssertionError: assert {'nbformat': ...utputs': []}]} == {'nbformat': ...utputs': []}]}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_replace_line" %}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_add_to_line" %}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_patches_both_ends" %}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_insertion_similar" %}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_replacement_similar" %}
-
 test:
   source_files:
     - nbdime/tests
@@ -150,8 +150,8 @@ about:
     - nbdime/labextension/static/third-party-licenses.json
   summary: Diff and merge of Jupyter Notebooks
   description: |
-    nbdime provides “content-aware” diffing and merging of Jupyter notebooks. 
-    It understands the structure of notebook documents. 
+    nbdime provides “content-aware” diffing and merging of Jupyter notebooks.
+    It understands the structure of notebook documents.
     Therefore, it can make intelligent decisions when diffing and merging notebooks.
   doc_url: https://nbdime.readthedocs.io
   dev_url: https://github.com/jupyter/nbdime
