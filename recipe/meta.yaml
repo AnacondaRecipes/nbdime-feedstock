@@ -1,23 +1,8 @@
 {% set name = "nbdime" %}
 {% set version = "4.0.4" %}
-{% set tests_to_skip = "test_diff_api_checkpoint" %}
-{% set tests_to_skip = tests_to_skip + " or test_nbmerge_app_decisions_outfile" %}
-{% set tests_to_skip = tests_to_skip + " or test_interrogate_filter_no_repo" %}
-{% set tests_to_skip = tests_to_skip + " or test_filter_cmd_invalid_filter" %}
-{% set tests_to_skip = tests_to_skip + " or test_apply_filter_no_repo" %}
-{% set tests_to_skip = tests_to_skip + " or test_merge_input_strategy_inline_source_conflict" %}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_replace_line" %}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_add_to_line" %}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_patches_both_ends" %}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_insertion_similar" %}
-{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_replacement_similar" %}
 
-# ConnectionRefusedError: [Errno 111] Connection refused
-# FileNotFoundError: [Errno 2] No such file or directory: 'git'
-# AssertionError: assert ['<<<<<<< loc...\nto align\n'] == ['<<<<<<< loc...>>>>> remote']
-# AssertionError: assert {'nbformat': ...utputs': []}]} == {'nbformat': ...utputs': []}]}
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -61,8 +46,23 @@ requirements:
     - requests
     - gitpython !=2.1.4,!=2.1.5,!=2.1.6
     - jupyter_server
-    - jupyter-server-mathjax >=0.2.2
     - jinja2 >=2.9
+
+# ConnectionRefusedError: [Errno 111] Connection refused
+# FileNotFoundError: [Errno 2] No such file or directory: 'git'
+# AssertionError: assert ['<<<<<<< loc...\nto align\n'] == ['<<<<<<< loc...>>>>> remote']
+# AssertionError: assert {'nbformat': ...utputs': []}]} == {'nbformat': ...utputs': []}]}
+{% set tests_to_skip = "test_diff_api_checkpoint" %}
+{% set tests_to_skip = tests_to_skip + " or test_nbmerge_app_decisions_outfile" %}
+{% set tests_to_skip = tests_to_skip + " or test_interrogate_filter_no_repo" %}
+{% set tests_to_skip = tests_to_skip + " or test_filter_cmd_invalid_filter" %}
+{% set tests_to_skip = tests_to_skip + " or test_apply_filter_no_repo" %}
+{% set tests_to_skip = tests_to_skip + " or test_merge_input_strategy_inline_source_conflict" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_replace_line" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_add_to_line" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_source_patches_both_ends" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_insertion_similar" %}
+{% set tests_to_skip = tests_to_skip + " or test_inline_merge_cells_replacement_similar" %}
 
 test:
   source_files:
